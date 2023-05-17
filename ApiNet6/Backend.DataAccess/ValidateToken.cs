@@ -60,7 +60,7 @@ namespace Backend.DataAccess
                         }
                     }
                 }
-
+                throw new Exception("Token validation failed");
                 return null;
             }
             catch (Exception ex)

@@ -23,7 +23,6 @@ namespace Backend.DataAccess
             var profileInfo = new
             {
                 IsActive = email.Contains("test"),
-                //EncryptedPassword = "T5yCecTyABmtEHq4DBw21Q==", // Hello World! 
                 EncryptedPassword = "j6IIEEqf6Nyja2o+NJK2Fg==", // test
                 ProfileId = Guid.NewGuid(),
                 MembershipType = Enums.MembershipType.Free,
