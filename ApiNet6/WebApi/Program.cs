@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebApi.Injectors;
@@ -17,6 +18,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureSwaggerFeature();
 builder.Services.AddAuthentication("Bearer");
 builder.Services.AddOptions();
+builder.Host
+    .ConfigureLogging(logging =>
+    {
+        logging.ClearProviders();
+        logging.AddConsole();
+        logging.AddSerilog();
+    })
+    .UseSerilog((hostContext, services, configuration) => {
+        configuration.WriteTo.Console();
+        configuration.WriteTo.Seq("http://localhost:5341/");
+    });
 
 builder.Services.AddApiVersioning(o => o.ApiVersionReader = new HeaderApiVersionReader("api-version"));
 builder.Services.AddHttpContextAccessor();
@@ -39,6 +51,7 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

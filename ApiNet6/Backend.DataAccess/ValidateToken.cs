@@ -51,6 +51,11 @@ namespace Backend.DataAccess
                         var tokenData = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenData>(claim!.Value!.ToString(), settings);
                         if (tokenData != null && tokenData?.ProfileId.ToString() != "00000000-0000-0000-0000-000000000000")
                         {
+                            if(tokenData!.IsActive == false)
+                            {
+                                throw new Exception("Account is not active");
+                            }
+
                             return new TokenData()
                             {
                                 IsActive = tokenData!.IsActive,
@@ -61,7 +66,6 @@ namespace Backend.DataAccess
                     }
                 }
                 throw new Exception("Token validation failed");
-                return null;
             }
             catch (Exception ex)
             {

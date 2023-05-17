@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace Backend.DataAccess
@@ -25,15 +26,21 @@ namespace Backend.DataAccess
                 IsActive = email.Contains("test"),
                 EncryptedPassword = "j6IIEEqf6Nyja2o+NJK2Fg==", // test
                 ProfileId = Guid.NewGuid(),
-                MembershipType = Enums.MembershipType.Free,
+                MembershipType = email.Contains("gen") ? Enums.MembershipType.GeneralUser : Enums.MembershipType.Free,
                 DisplayName = "Test User",
                 Email = email,
             };
 
-            if (profileInfo == null || profileInfo.IsActive == false)
+            if (profileInfo == null)
             {
                 throw new ValidationException("Invalid email address provided");
             }
+
+            if (profileInfo.IsActive == false)
+            {
+                throw new ValidationException("Account is not active");
+            }
+
 
             if (ValidatePassword(profileInfo, password) == false)
             {
